@@ -1,0 +1,229 @@
+# Basics Of Languages
+From Robert Nystrom's *Crafting Interpreters* - Chapter 2 ("A Map Of The Territory")
+
+## The Hiking Analogy
+
+You can think of interpreting/compiling like hiking up a mountain.
+
+### Scanning
+
+Given the source code, you need to break it up into usable tokens for the interpreter/compiler to use. For example, the code
+
+```python
+average = (min + max) / 2
+```
+
+Would be broken up into these tokens (represented as a Python list for readability):
+
+```python
+['average', '=', '(', 'min', '+', 'max', ')', '/', '2']
+```
+
+As you can see, tokens can be only a single character, or an extremely long string. Lexical analysis should be mindful of that.
+Furthermore, there is a lot of stuff in source code that could be ignored, namely comments and whitespace. All you should have
+at the end of lexical analysis is the necessary tokens and only the necessary tokens.
+
+### Parsing
+
+Once you get the tokens, you'll need to parse them to apply the grammar of the language. A parser generates a tree structure
+that reflects the grammar of the language.
+
+Below is an example of an AST based off some Python code
+
+```python
+print("Hello world")
+
+num1 = 1.5
+num2 = 6.3
+
+# Add two numbers
+sum = num1 + num2
+
+# Display the sum
+print('The sum of {0} and {1} is {2}'.format(num1, num2, sum))
+
+# Note: change this value for a different result
+num = 8
+
+# To take the input from the user
+#num = float(input('Enter a number: '))
+
+num_sqrt = num ** 0.5
+print('The square root of %0.3f is %0.3f'%(num ,num_sqrt))
+```
+
+Here is part of that tree (the tree is over a thousand lines long):
+
+```json
+{
+  "type": "Program",
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0
+    },
+    "end": {
+      "line": 20,
+      "column": 0
+    }
+  },
+  "range": [
+    0,
+    378
+  ],
+  "body": [
+    {
+      "type": "ExpressionStatement",
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 20
+        }
+      },
+      "range": [
+        0,
+        20
+      ],
+      "expression": {
+        "type": "CallExpression",
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 20
+          }
+        },
+        "range": [
+          0,
+          20
+        ],
+        "arguments": [
+          {
+            "type": "Literal",
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 6
+              },
+              "end": {
+                "line": 1,
+                "column": 19
+              }
+            },
+            "range": [
+              6,
+              19
+            ],
+            "value": "Hello world",
+            "raw": "\"Hello world\""
+          }
+        ],
+        ...
+      }
+    }
+  ]
+}
+```
+
+### Static Analysis
+
+With the tree and the tokens, we can further analyze the code to help us with the rest of the compilation process.
+
+The first step is binding. Specifically, that entails going through all the identifiers and binding them to the values they
+represent. In binding, these get wired together. This is where scope comes to play. The region of source code where a certain name
+can be used to refer to a specific declaration.
+
+If a language is statically typed, we also need to figure out the types to make sure the code doesn't have any type errors.
+
+### Intermediate Expressions
+An intermediate expression could be code that isn't like either the machine code or the source code. Like the name implies,
+intermediate code provides an intermediary between the source code and machine code. This could allow you to simplify the process
+of compilation by centralizing everything to an intermediary point, then creating sub-compilers to help with converting to
+a target language.
+
+### Optimization
+
+There are ways to optimize the source code so things can run as fast as possible.
+
+One way to do this is constant folding. If some expression always evaluates to the exact same value, we can do the evaluation at compile time and replace the code with the result.
+
+For example, this code
+
+```python
+area = 2 * 3
+```
+
+Can be folded into:
+
+```python
+area = 6
+```
+
+While there are plenty of ways to optimize, the book I'm getting these notes from will likely skip over a lot of it.
+For what it's worth, a lot of languages don't do much compile-time optimizations.
+
+### Code Generation
+
+Now we have to convert what we have to something the machine can actually run. By the point we get to this point, the code will be 
+a lot less human-readable but a lot more machine-readable (in other words, it gets lower-level as the process happens).
+
+We can either convert to something used directly by the machine (although you need to be mindful of the hardware), or
+you can set up a virtual machine to run the bytecode generated by the language.
+
+### Virtual Machines
+
+If you go the bytecode route, there are two ways to handle it.
+
+The first way to is create small compilers for each target hardware configuration. This would be simpler than directly
+converting to machine code, but you will have to do some work for each hardware config (eg. x86, ARM, etc.)
+
+You can also create a virtual machine that can run the bytecode anywhere. A virtual machine emulates a hypothetical chip
+supporting the VM architecture. For instance, if you write your VM in C, any machine with a C compiler should be able to run it.
+However, you sacrifice speed for portability.
+
+### Runtime
+
+When the program is running, there might be some things the language has to do. For instance, if your language has garbage collection,
+there needs to be a service to handle dealing with the unused/discarded bits of memory. In the case of Java, these kind of runtime
+services work inside the VM.
+
+## Shortcuts
+
+### Single-Pass Compilers
+
+These do the parsing, analysis, and code generation is done in one step so the compiler produces code in the parser.
+No syntax trees or intermediary representations are used. Furthermore, previously parsed parts of the code aren't revisited.
+This leads to restrictions on how you can write the code out of the box. To bypass this, some languages have some ways to handle that.
+For instance, in C, you can have forward declarations.
+
+### Tree-Walk Interpreters
+
+These work by executing code right after the AST is created (or after some static analysis is applied). To run the program,
+the interpreter traverses the syntax tree one branch and leaf at a time, evaluating each node as it goes.
+
+### Transpilers
+
+Transpilers convert from one language of source code to another (for instance, Python to C). Depending on the differences
+between the language, the transpiler might behave like any other standard compiler or interpreter.
+
+### JIT Compilation
+
+Here, the code is blindly converted to machine code without any concern about the target hardware.
+
+## Understanding Compilers vs. Interpreters
+
+Compiling is an implementation technique that involves translating a source language to some other (usually lower-level)
+form. When you generate bytecode or machine code, you are compiling. Transpiling can be considered compilation.
+
+When we say a language implementation is a compiler, we mean it translates source code to some other form, but it doesn't execute it. 
+The user has to take the resulting output and run it themselves.
+
+When we say that an implementation is an interpreter, we mean it takes in source code and executes it immediately. The
+program is run from source
