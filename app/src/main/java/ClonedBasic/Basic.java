@@ -9,6 +9,8 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class Basic {
+    static boolean encounteredError = false;
+
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
             System.out.println("Usage: Basic [script]");
@@ -23,6 +25,9 @@ public class Basic {
     private static void runFile(String path) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         run(new String(bytes, Charset.defaultCharset()));
+        if (encounteredError) {
+            System.exit(65);
+        }
     }
 
     private static void runPrompt() throws IOException {
@@ -36,6 +41,7 @@ public class Basic {
                 break;
             }
             run(line);
+            encounteredError = false;
         }
     }
 
