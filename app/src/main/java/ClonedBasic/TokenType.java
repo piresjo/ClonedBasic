@@ -49,5 +49,11 @@ public enum TokenType {
     END,
     SELECT,
     CASE,
+    INTEGER_TYPE,
+    STRING_TYPE,
+    SINGLE_TYPE,
+    DOUBLE_TYPE,
+    LONG_TYPE,
+    INPUT
 
 }

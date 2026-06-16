@@ -39,6 +39,12 @@ public class Scanner {
         keywords.put("end", END);
         keywords.put("select", SELECT);
         keywords.put("case", CASE);
+        keywords.put("integer", INTEGER_TYPE);
+        keywords.put("string", STRING_TYPE);
+        keywords.put("long", LONG_TYPE);
+        keywords.put("single", SINGLE_TYPE);
+        keywords.put("double", DOUBLE_TYPE);
+        keywords.put("input", INPUT);
 
 
     }
@@ -137,8 +143,6 @@ public class Scanner {
         }
 
         String text = source.substring(this.start, this.current);
-        System.out.println(text);
-        System.out.println(text.toLowerCase());
         TokenType type = keywords.get(text.toLowerCase());
         if (type == null) {
             type = IDENTIFIER;
