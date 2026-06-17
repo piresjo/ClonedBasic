@@ -25,10 +25,12 @@ public class Scanner {
         keywords.put("while", WHILE);
         keywords.put("until", UNTIL);
         keywords.put("if", IF);
+        keywords.put("then", THEN);
         keywords.put("endif", ENDIF);
         keywords.put("else", ELSE);
         keywords.put("print", PRINT);
         keywords.put("goto", GOTO);
+        keywords.put("gosub", GOSUB);
         keywords.put("sub", SUB);
         keywords.put("cls", CLS);
         keywords.put("dim", DIM);
@@ -45,7 +47,18 @@ public class Scanner {
         keywords.put("single", SINGLE_TYPE);
         keywords.put("double", DOUBLE_TYPE);
         keywords.put("input", INPUT);
-
+        keywords.put("locate", LOCATE);
+        keywords.put("color", COLOR);
+        keywords.put("rnd", RND);
+        keywords.put("randomize", RANDOMIZE);
+        keywords.put("timer", TIMER);
+        keywords.put("on", ON);
+        keywords.put("error", ERROR);
+        keywords.put("function", FUNCTION);
+        keywords.put("beep", BEEP);
+        keywords.put("sound", SOUND);
+        keywords.put("play", PLAY);
+        keywords.put("type", TYPE);
 
     }
 
@@ -104,10 +117,14 @@ public class Scanner {
                 this.addToken(EQUAL);
                 break;
             case '<':
-                this.addToken(match('=') ? LESS_EQUAL : LESS);
+                if (this.match('>')) {
+                    this.addToken(NOT_EQUAL);
+                } else {
+                    this.addToken(this.match('=') ? LESS_EQUAL : LESS);
+                }
                 break;
             case '>':
-                this.addToken(match('=') ? GREATER_EQUAL : GREATER);
+                this.addToken(this.match('=') ? GREATER_EQUAL : GREATER);
                 break;
             case '\'':
                 while (this.peek() != '\n' && !(this.isAtEnd())) {
