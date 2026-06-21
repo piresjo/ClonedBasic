@@ -3,7 +3,7 @@ package ClonedBasic;
 public class Token {
 
     private final TokenType tokenType;
-    private final String lexeme;
+    final String lexeme;
     private final Object literal;
     private final int line;
 

@@ -6,7 +6,7 @@ import static ClonedBasic.TokenType.*;
 
 public class Scanner {
     private final String source;
-    private List<Token> tokens;
+    private final List<Token> tokens;
     private int start;
     private int current;
     private int line;
@@ -97,6 +97,9 @@ public class Scanner {
                 break;
             case ',':
                 this.addToken(COMMA);
+                break;
+            case ';':
+                this.addToken(SEMICOLON);
                 break;
             case '.':
                 this.addToken(DOT);
