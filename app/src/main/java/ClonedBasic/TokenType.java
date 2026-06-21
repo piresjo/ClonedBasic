@@ -2,6 +2,11 @@ package ClonedBasic;
 
 // ToDo - Flesh Out
 public enum TokenType {
+    /*
+     ******************************
+     * SINGLE-CHARACTER TOKENS
+     ******************************
+     */
     LEFT_PARENTHESIS,
     RIGHT_PARENTHESIS,
     LEFT_BRACE,
@@ -13,21 +18,40 @@ public enum TokenType {
     SLASH,
     STAR,
     BANG,
-    NOT_EQUAL,
     EQUAL,
-    EQUALITY,
     LESS,
-    LESS_EQUAL,
     GREATER,
+    SEMICOLON,
+    COMMENT_QUOTE,
+
+    /*
+     ******************************
+     * DOUBLE CHARACTER TOKENS
+     ******************************
+     */
     GREATER_EQUAL,
-    IDENTIFIER,
+    LESS_EQUAL,
+    NOT_EQUAL,
+
+
+    /*
+     ******************************
+     * LITERALS
+     ******************************
+     */
     STRING,
     NUMBER,
+    FALSE,
+    TRUE,
+
+    /*
+     ******************************
+     * KEYWORDS
+     ******************************
+     */
     AND,
     OR,
     NOT,
-    FALSE,
-    TRUE,
     FOR,
     NEXT,
     DO,
@@ -39,7 +63,6 @@ public enum TokenType {
     PRINT,
     GOTO,
     SUB,
-    EOF,
     ENDIF,
     CLS,
     DIM,
@@ -54,6 +77,27 @@ public enum TokenType {
     SINGLE_TYPE,
     DOUBLE_TYPE,
     LONG_TYPE,
-    INPUT
+    INPUT,
+    LOCATE,
+    COLOR,
+    RND,
+    RANDOMIZE,
+    TIMER,
+    ON,
+    ERROR,
+    FUNCTION,
+    GOSUB,
+    BEEP,
+    SOUND,
+    PLAY,
+    TYPE,
+    THEN,
 
+    /*
+     ******************************
+     * OTHER
+     ******************************
+     */
+    EOF,
+    IDENTIFIER,
 }
